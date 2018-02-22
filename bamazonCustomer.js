@@ -16,8 +16,6 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err){
 	if (err) throw err;
-
-	console.log("Connected as id " + connection.threadId + "\n");
 	start();
 
 });
@@ -45,7 +43,7 @@ function start() {
 function showItems () {
 	connection.query("SELECT * FROM products", function(err, res) {
 	for (var i = 0 ; i < res.length; i++ ) {
-		console.log(res[i].id + ". " + res[i].product_name + ", $" + res[i].price)
+		console.log(res[i].id + ". " + res[i].product_name + ", $" + res[i].price + ", " + res[i].stock_quantity + " in stock")
 	}
 
 	buyItem();
@@ -60,7 +58,7 @@ function buyItem() {
 	{
 		name: "choose_item",
 		type: "input",
-		message: "\nWhat product would you like to buy (by number ID)?"
+		message: "\nWhat product would you like to buy (by product name)?"
 	},
 	{
 		name: "itemQuantity",
@@ -70,54 +68,56 @@ function buyItem() {
 	]).then(function(answers){
 		console.log("\nYour purchase is being processed...\n");
 
-		connection.query("SELECT * FROM products", function(err, res) {
-			var productID = answers.itemQuantity;
-			for (var i = 0; i < res.length; i++) {
-
-				var id = res[i].id;
-
-				if (id === parseInt(answers.choose_item)) {
-					id = answers.choose_item;
-					checkQuantity(id);
-
-				}
+		connection.query("SELECT * FROM products WHERE ?", 
+			{
+				product_name: answers.choose_item.toLowerCase().trim()
+			}, 
+			function(err, res) {
+			if (answers.itemQuantity <= res[0].stock_quantity) {
+				console.log("--------------------------");
+				console.log("Thank you for your order");
+				var quantity = answers.itemQuantity;
+				var response = answers.choose_item;
+				updateInventory(quantity, response);
+			} else {
+				console.log("This order cannot be processed as your desired quantity exceeds our current stock.")
+				buyItem();
 			}
 		}
 	  );
 	})
 } // END BUY ITEM FUNCTION
 
-function checkQuantity (id) {
+function updateInventory (quantity, response) {
 
-	console.log(id);
+	connection.query("SELECT * FROM products WHERE ?", 
+		{
+			product_name: response
+		},
+		function(err, res) {
+			var stock = res[0].stock_quantity;
+			var price = res[0].price;
+			var total = price * quantity;
 
-	connection.query("SELECT * FROM products", function(err, res) {
-		console.log(res);
+			console.log("\nYour total is: " + total);
+			console.log("--------------------------");
 
-		if (res.id === parseInt(id)) {
-			console.log("item selected");
-		}
+			connection.query("UPDATE products SET ? WHERE ?",
+				[
+					{
+						stock_quantity: stock - quantity
+					},
+					{
+						product_name: response
+					}
+				],
+				function(err, res) {
+					if (err) throw err;
+					console.log("\nInventory Updated!");
+					start();
+				}
+			   )
+	 })
 
-
-	}) 
-
-	// connection.query("UPDATE products SET ? WHERE ?",
-	// 	[
-	// 		{
-	// 			stock_quantity: newQuantity
-	// 		},
-	// 		{
-				
-	// 		}
-
-	// 	], 
-	// 	function(err, res){
-	// 	if (answers.itemQuantity - res.stock_quantity < 0) {
-	// 		console.log("Insufficent quantity!");
-	// 	} else {
-	// 		var newQuantity = res.stock_quantity - answers.itemQuantity;
-
-	// 	}
-	// })
-}
+} // END CHECK QUANTITY FUNCTION
 
