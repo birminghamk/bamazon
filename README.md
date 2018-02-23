@@ -2,7 +2,7 @@
 
 A node application for purchasing items in an Amazon-type atmosphere.
 
-![Demo](https://user-images.githubusercontent.com/30732917/36571471-1576559c-17f4-11e8-8620-564509b805b3.gif)
+![Demo](https://user-images.githubusercontent.com/30732917/36615464-977c8292-189d-11e8-8c16-5b376ebb8f0b.gif)
 
 ## How It Works
 
@@ -15,6 +15,7 @@ Upon running the associated file in Node (bamazonCustomer), the user will be pro
 	- npm packages:
 		- MySQL
 		- Inquirer
+		- Cli-table
 
 ## Author
 
