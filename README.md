@@ -2,7 +2,7 @@
 
 A node application for purchasing items in an Amazon-type atmosphere.
 
-https://user-images.githubusercontent.com/30732917/36571471-1576559c-17f4-11e8-8620-564509b805b3.gif
+![Demo](https://user-images.githubusercontent.com/30732917/36571471-1576559c-17f4-11e8-8620-564509b805b3.gif)
 
 ## How It Works
 
