@@ -49,7 +49,7 @@ function start() {
 
 	})
 
-} // END START FUNCTION
+} 
 
 // showItems function displays items in database as a table
 function showItems () {
@@ -77,7 +77,7 @@ function showItems () {
 
 
 
-} // END buyItem FUNCTION
+} 
 
 
 // buyItem function allows user to buy item from table
@@ -118,7 +118,7 @@ function buyItem() {
 		}
 	  );
 	})
-} // END BUY ITEM FUNCTION
+} 
 
 
 // updateInventory function updates inventory in database after user purchases item
@@ -157,5 +157,5 @@ function updateInventory (quantity, response) {
 			)
 	 })
 
-} // END updateInventory FUNCTION
+} 
 
